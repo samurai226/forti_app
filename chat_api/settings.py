@@ -87,6 +87,7 @@ ROOT_URLCONF = 'chat_api.urls'
 
 # ASGI Application for WebSocket support
 ASGI_APPLICATION = 'chat_api.asgi.application'
+WSGI_APPLICATION = 'chat_api.wsgi.application'
 
 TEMPLATES = [
     {

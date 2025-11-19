@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'channels',  # WebSocket support
     'health_check',
     'health_check.db',
     'health_check.cache',
@@ -103,7 +104,8 @@ TEMPLATES = [
     },
 ]
 
-# WSGI Application (HTTP only - no WebSocket)
+# ASGI Application for WebSocket support
+ASGI_APPLICATION = 'chat_api.asgi.application'
 WSGI_APPLICATION = 'chat_api.wsgi.application'
 
 # AWS RDS PostgreSQL Database Configuration
@@ -262,5 +264,27 @@ HEALTH_CHECK = {
     'DISK_USAGE_MAX': 90,  # percent
     'MEMORY_MIN': 100,    # in MB
 }
+
+# WebSocket Channel Layers Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [os.getenv('REDIS_URL', 'redis://localhost:6379')],
+            "capacity": 1500,
+            "expiry": 60,
+        },
+    },
+}
+
+# Fallback to in-memory layer if Redis is not available
+if not os.getenv('REDIS_URL'):
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
+
+
 
 

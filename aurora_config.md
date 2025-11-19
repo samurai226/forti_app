@@ -119,3 +119,5 @@ python manage.py createsuperuser
 Your FortiFun app is now ready for production with AWS RDS Aurora! 🎉
 
 
+
+

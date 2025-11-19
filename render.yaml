@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: fortifun-http-api
+    name: fortifun-api
     env: python
     buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
-    startCommand: python manage.py runserver 0.0.0.0:$PORT
+    startCommand: daphne -b 0.0.0.0 -p $PORT chat_api.asgi:application
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -25,6 +25,10 @@ services:
         value: "fortifun-media"
       - key: AWS_S3_REGION_NAME
         value: "us-west-2"
+      - key: REDIS_URL
+        value: "redis://localhost:6379"  # Will use in-memory layer if Redis unavailable
     healthCheckPath: /api/v1/accounts/auth/login
 
-# Using existing AWS RDS PostgreSQL database
+# Using AWS RDS PostgreSQL database
+# WebSocket support via Daphne ASGI server
+# In-memory channel layer (no Redis required for single instance)
